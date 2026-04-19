@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Gampong Leubeu — Kuliner Khas</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:       #1e6b3c;
+      --green-mid:   #2d8a52;
+      --green-light: #e6f4ed;
+      --green-pale:  #f0f9f4;
+      --green-dark:  #13472a;
+      --gold:        #c8890a;
+      --gold-light:  #fef8e7;
+      --white:       #ffffff;
+      --gray-50:     #f7f8f6;
+      --gray-100:    #eef0ec;
+      --gray-200:    #dde0d9;
+      --gray-400:    #9aa094;
+      --gray-600:    #5a6356;
+      --gray-800:    #1e2420;
+      --radius-sm:   8px;
+      --radius-md:   12px;
+      --radius-lg:   18px;
+      --shadow-sm:   0 1px 4px rgba(0,0,0,0.07);
+      --shadow-md:   0 6px 20px rgba(0,0,0,0.10);
+      --tr:          0.25s ease;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-800);
+      line-height: 1.6;
+    }
+
+    /* ========== NAVBAR ========== */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      position: sticky; top: 0; z-index: 200;
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 1.5rem; height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo {
+      width: 40px; height: 40px; background: var(--green);
+      border-radius: 10px; display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0;
+    }
+    .nav-logo svg { width: 22px; height: 22px; fill: white; }
+    .nav-title-wrap { display: flex; flex-direction: column; }
+    .nav-title { font-size: 15px; font-weight: 700; color: var(--green-dark); line-height: 1.2; }
+    .nav-sub { font-size: 11px; color: var(--gray-400); }
+    .nav-links { display: flex; list-style: none; gap: 2px; }
+    .nav-links a {
+      text-decoration: none; font-size: 13.5px; font-weight: 500;
+      color: var(--gray-600); padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      transition: background var(--tr), color var(--tr); cursor: pointer;
+    }
+    .nav-links a:hover { background: var(--green-light); color: var(--green-dark); }
+    .nav-links a.active { background: var(--green-light); color: var(--green); font-weight: 600; }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px; cursor: pointer;
+      padding: 8px; border-radius: var(--radius-sm); border: none; background: none;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 2px; background: var(--gray-600);
+      border-radius: 2px; transition: transform var(--tr), opacity var(--tr);
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-menu {
+      display: none; position: fixed;
+      top: 62px; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4); z-index: 199;
+    }
+    .mobile-menu.open { display: block; }
+    .mobile-panel {
+      background: var(--white);
+      padding: 0.75rem 1.5rem 1rem;
+      display: flex; flex-direction: column; gap: 2px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .mobile-panel a {
+      text-decoration: none; font-size: 15px; font-weight: 500;
+      color: var(--gray-600); padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      transition: background var(--tr), color var(--tr); cursor: pointer;
+    }
+    .mobile-panel a:hover, .mobile-panel a.active {
+      background: var(--green-light); color: var(--green-dark);
+    }
+
+    /* ========== PAGE TRANSITION ========== */
+    .page { display: none; opacity: 0; animation: fadeUp .32s ease forwards; }
+    .page.active { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    /* ========== HERO ========== */
+    .hero {
+      position: relative; overflow: hidden;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, #0d3d20 0%, #1e6b3c 55%, #2d8a52 100%);
+      padding: 3.5rem 2.5rem 3rem;
+      margin-bottom: 2rem; color: white;
+    }
+    .hero-deco {
+      position: absolute; border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .hero-deco.a { width:260px;height:260px;top:-80px;right:-60px; }
+    .hero-deco.b { width:160px;height:160px;bottom:-50px;right:130px; }
+    .hero-deco.c { width:100px;height:100px;bottom:20px;left:-30px; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 600;
+      padding: 5px 14px; border-radius: 20px; margin-bottom: 1.2rem;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(26px, 4.5vw, 42px);
+      font-weight: 800; line-height: 1.15; margin-bottom: 0.9rem;
+    }
+    .hero h1 span { color: #7ee8a8; }
+    .hero p {
+      font-size: 15px; color: rgba(255,255,255,0.82);
+      max-width: 500px; line-height: 1.75; margin-bottom: 2rem;
+    }
+    .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .hero-chip {
+      background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.9);
+      font-size: 12px; padding: 5px 12px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* ========== STATS ========== */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+    .stat {
+      background: var(--white); border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md); padding: 1.25rem 1rem; text-align: center;
+      transition: box-shadow var(--tr), transform var(--tr);
+    }
+    .stat:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .stat-emoji { font-size: 26px; margin-bottom: 6px; }
+    .stat-num { font-size: 22px; font-weight: 800; color: var(--green); }
+    .stat-lbl { font-size: 11.5px; color: var(--gray-400); margin-top: 2px; }
+
+    /* ========== SECTION HEADER ========== */
+    .sec-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+    .sec-title {
+      font-size: 18px; font-weight: 700; color: var(--gray-800);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sec-title::before {
+      content: ''; display: block; width: 4px; height: 22px;
+      background: var(--green); border-radius: 3px;
+    }
+    .see-all {
+      font-size: 13px; color: var(--green); font-weight: 600;
+      cursor: pointer; background: none; border: none;
+      transition: color var(--tr), text-decoration var(--tr);
+    }
+    .see-all:hover { color: var(--green-dark); text-decoration: underline; }
+
+    /* ========== CARD GRID ========== */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(300px,1fr)); gap: 1.25rem; }
+
+    /* ========== KULINER CARD ========== */
+    .card {
+      background: var(--white); border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg); overflow: hidden;
+      transition: transform var(--tr), box-shadow var(--tr);
+      cursor: pointer; display: flex; flex-direction: column;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+    .card-img-wrap {
+      width: 100%; height: 200px; overflow: hidden;
+      background: var(--gray-100); flex-shrink: 0; position: relative;
+    }
+    .card-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block; transition: transform .45s ease;
+    }
+    .card:hover .card-img-wrap img { transform: scale(1.06); }
+    /* rating badge di gambar */
+    .card-rating {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(0,0,0,0.55); color: #ffd54f;
+      font-size: 12px; font-weight: 600; padding: 3px 8px;
+      border-radius: 20px; display: flex; align-items: center; gap: 3px;
+      backdrop-filter: blur(4px);
+    }
+    .card-body { padding: 1.25rem; display: flex; flex-direction: column; flex: 1; }
+    .card-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+    .tag {
+      font-size: 11px; font-weight: 700; padding: 3px 9px;
+      border-radius: 20px; text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .tag-makanan   { color: #1e6b3c; background: #e6f4ed; }
+    .tag-minuman   { color: #1a5276; background: #d6eaf8; }
+    .tag-kue       { color: #784212; background: #fef9e7; }
+    .tag-seafood   { color: #6c3483; background: #f5eef8; }
+    .card-date { font-size: 12px; color: var(--gray-400); }
+    .card-title {
+      font-size: 15.5px; font-weight: 700; color: var(--gray-800);
+      margin-bottom: 8px; line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .card-desc {
+      font-size: 13px; color: var(--gray-600); line-height: 1.65;
+      display: -webkit-box; -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical; overflow: hidden; flex: 1;
+    }
+    .card-footer {
+      margin-top: 1rem; padding-top: 0.75rem;
+      border-top: 1px solid var(--gray-100);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-link { font-size: 12.5px; color: var(--green); font-weight: 600; }
+    .card-place { font-size: 12px; color: var(--gray-400); display: flex; align-items: center; gap: 3px; }
+
+    /* ========== FEATURED (horizontal big card) ========== */
+    .card-featured {
+      grid-column: 1 / -1;
+      display: grid; grid-template-columns: 360px 1fr;
+      background: var(--white); border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg); overflow: hidden;
+      transition: box-shadow var(--tr); cursor: pointer;
+    }
+    .card-featured:hover { box-shadow: var(--shadow-md); }
+    .card-featured .card-img-wrap { width: 100%; height: 100%; min-height: 220px; }
+    .card-featured .card-body { padding: 1.75rem; }
+    .card-featured .card-title { font-size: 18px; -webkit-line-clamp: 3; }
+    .card-featured .card-desc { -webkit-line-clamp: 5; }
+
+    /* ========== HALAMAN BERITA ========== */
+    .berita-hdr { margin-bottom: 2rem; }
+    .berita-hdr h1 { font-size: 26px; font-weight: 800; margin-bottom: 4px; }
+    .berita-hdr p { font-size: 14px; color: var(--gray-400); }
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.75rem; }
+    .fbtn {
+      padding: 7px 16px; border-radius: 20px;
+      border: 1px solid var(--gray-200); background: var(--white);
+      font-size: 13px; font-weight: 500; color: var(--gray-600);
+      cursor: pointer; transition: all var(--tr);
+    }
+    .fbtn:hover, .fbtn.active { background: var(--green); border-color: var(--green); color: white; }
+
+    /* ========== TENTANG ========== */
+    .about-banner {
+      border-radius: var(--radius-lg); overflow: hidden;
+      background: linear-gradient(135deg, var(--green-dark), var(--green));
+      padding: 2.5rem; color: white; margin-bottom: 2rem;
+      display: flex; align-items: center; gap: 1.5rem;
+    }
+    .about-icon {
+      width: 68px; height: 68px; background: rgba(255,255,255,0.15);
+      border-radius: 16px; display: flex; align-items: center;
+      justify-content: center; font-size: 32px; flex-shrink: 0;
+    }
+    .about-banner h2 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+    .about-banner p { font-size: 14px; color: rgba(255,255,255,0.8); }
+
+    .about-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 1.25rem; margin-bottom: 1.5rem; }
+    .info-card {
+      background: var(--white); border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md); padding: 1.5rem;
+    }
+    .info-card h3 {
+      font-size: 14px; font-weight: 700; color: var(--green-dark);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 6px;
+    }
+    .irow {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 7px 0; border-bottom: 1px solid var(--gray-100); gap: 1rem;
+    }
+    .irow:last-child { border-bottom: none; }
+    .ilabel { font-size: 13px; color: var(--gray-400); flex-shrink: 0; }
+    .ivalue { font-size: 13px; font-weight: 600; color: var(--gray-800); text-align: right; }
+
+    .vm-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .vm-card { border-radius: var(--radius-md); padding: 1.5rem; }
+    .vm-card.visi { background: var(--green-light); border: 1px solid rgba(30,107,60,0.2); }
+    .vm-card.misi { background: var(--gold-light); border: 1px solid rgba(200,137,10,0.2); }
+    .vm-card h3 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 0.75rem; }
+    .vm-card.visi h3 { color: var(--green-dark); }
+    .vm-card.misi h3 { color: #7d5700; }
+    .vm-card p, .vm-card li { font-size: 13px; color: var(--gray-600); line-height: 1.75; }
+    .vm-card ul { padding-left: 1.2rem; }
+    .vm-card li { margin-bottom: 3px; }
+
+    .desc-card {
+      background: var(--white); border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md); padding: 1.75rem; margin-bottom: 2rem;
+    }
+    .desc-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 0.8rem; }
+    .desc-card p { font-size: 14px; color: var(--gray-600); line-height: 1.85; margin-bottom: 0.75rem; }
+    .desc-card p:last-child { margin-bottom: 0; }
+
+    /* ========== PETA / LOKASI BANNER ========== */
+    .lokasi-banner {
+      background: var(--green-pale); border: 1px solid rgba(30,107,60,0.15);
+      border-radius: var(--radius-md); padding: 1.5rem;
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .lokasi-icon { font-size: 28px; flex-shrink: 0; }
+    .lokasi-banner p { font-size: 13.5px; color: var(--gray-600); line-height: 1.6; }
+    .lokasi-banner strong { color: var(--green-dark); }
+
+    /* ========== FOOTER ========== */
+    footer {
+      background: var(--white); border-top: 1px solid var(--gray-200);
+      text-align: center; padding: 1.75rem 1rem; margin-top: 3rem;
+      font-size: 13px; color: var(--gray-400);
+    }
+    footer strong { color: var(--green); }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      main { padding: 1.25rem 1rem; }
+      .hero { padding: 2rem 1.5rem 1.75rem; }
+      .card-featured { grid-template-columns: 1fr; }
+      .card-featured .card-img-wrap { height: 200px; }
+      .about-banner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========== NAVBAR ========== -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="#" onclick="return false;">
+      <div class="nav-logo">
+        <!-- Ikon daun / desa -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.5 2 3 6 3 10c0 5 5 10 9 12 4-2 9-7 9-12 0-4-3.5-8-9-8z"/>
+        </svg>
+      </div>
+      <div class="nav-title-wrap">
+        <span class="nav-title">Desa Leubeu</span>
+        <span class="nav-sub">Kec. Pidie · Kab. Pidie · Aceh</span>
+      </div>
+    </a>
+    <ul class="nav-links" id="deskMenu">
+      <li><a data-page="dashboard" class="active" onclick="go('dashboard')">Dashboard</a></li>
+      <li><a data-page="berita" onclick="go('berita')">Kuliner</a></li>
+      <li><a data-page="tentang" onclick="go('tentang')">Tentang Desa</a></li>
+    </ul>
+    <button class="hamburger" id="hbg" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobMenu" onclick="closeMobOverlay(event)">
+  <div class="mobile-panel">
+    <a data-page="dashboard" class="active" onclick="go('dashboard');closeMenu()">Dashboard</a>
+    <a data-page="berita" onclick="go('berita');closeMenu()">Kuliner</a>
+    <a data-page="tentang" onclick="go('tentang');closeMenu()">Tentang Desa</a>
+  </div>
+</div>
+
+<!-- ===================================================
+     HALAMAN DASHBOARD
+=================================================== -->
+<div class="page active" id="page-dashboard">
+  <main>
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-deco a"></div>
+      <div class="hero-deco b"></div>
+      <div class="hero-deco c"></div>
+      <div class="hero-tag">🌿 Portal Resmi Desa</div>
+      <h1>Selamat Datang di<br><span>Desa Leubeu</span></h1>
+      <p>Portal informasi resmi Desa Leubeu, Kecamatan Pidie, Kabupaten Pidie, Provinsi Aceh. Temukan kekayaan kuliner, budaya, dan kehidupan masyarakat desa kami di sini.</p>
+      <div class="hero-chips">
+        <span class="hero-chip">📍 Kec. Pidie</span>
+        <span class="hero-chip">🏡 Kab. Pidie</span>
+        <span class="hero-chip">🌙 Provinsi Aceh</span>
+        <span class="hero-chip">🍽️ Surga Kuliner Rempah</span>
+      </div>
+    </div>
+
+    <!-- Statistik -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-emoji">👥</div>
+        <div class="stat-num">421</div>
+        <div class="stat-lbl">Jumlah Penduduk</div>
+      </div>
+      <div class="stat">
+        <div class="stat-emoji">🏠</div>
+        <div class="stat-num">124</div>
+        <div class="stat-lbl">Kepala Keluarga</div>
+      </div>
+      <div class="stat">
+        <div class="stat-emoji">🗺️</div>
+        <div class="stat-num">0,40 km²</div>
+        <div class="stat-lbl">Luas Wilayah</div>
+      </div>
+      <div class="stat">
+        <div class="stat-emoji">🍽️</div>
+        <div class="stat-num">12+</div>
+        <div class="stat-lbl">Kuliner Khas daerah leubeu dan sekitarnya</div>
+      </div>
+    </div>
+
+    <!-- Tentang Gampong Leubue -->
+    <div class="desc-card">
+      <h3>🏡 Tentang Gampong Leubue</h3>
+      <p>Gampong Leubue merupakan Gampong yang jaraknya lumayan dekat dengan kota Sigli dan Grong-grong, sekitar 2 Kilometer atau 10 menit lamanya jika mengendarai sepeda motor atau angkutan umum. Letaknya tidak begitu jauh ke dalam, hanya 50 meter dari jalan raya Medan-Banda Aceh. Gampong ini bukan gampong yang terpelosok, masyarakatnya sudah lumayan berkembang. Di gampong Lebue pula terdapat sekolah-sekolah dari SD hingga SMA yang sebagian besarnya sudah berstatus Unggul.</p>
+      <p>Potensi yang besar dalam bidang pertanian, terutama persawahan membuat dominan masyarakat memilih bergelut dalam lahan sawah, dan ada juga yang membuka usaha-usaha rumahan lain seperti produksi kerupuk melinjo, emping, emping beras ketan, dan produksi terasi. Semua usaha ini sudah dipasarkan sampai ke luar daerah. Baik yang sudah jadi maupun yang masih dalam keadaan mentah. Akan tetapi, dari segi pengemasan produk dan pemasaran masih kurang baik. Kelompok ekonomi gampong Leubue sudah tergolong ekonomi menengah. Hal ini tampak dari tidak adanya masyarakat yang kondisinya sangat miskin.sebagian masyarakat sudah mulai membangun rumah mereka dengan batu-bata atau beton.</p>
+      <p>Jalan akses menuju gampong Leubue sudah lumayan baik. Lorong-lorongnya dibuat rabat beton, dan di dalam gampong banyak ditanam pohon melinjo dan pohon bambu. Pohon-pohon inilah yang dimanfaatkan oleh sebagian masyarakat gampong sebagai sumber pencaharian.</p>
+      <p>Konon katanya mengapa dinamakan Gampong Leubue, Leubue adalah bahasa acehnya dari daun talas dikarenakan pada masa dahulu gampong Leubue banyak di tumbuhi daun Talas, sehingga dibersihkanlah oleh orang-orang dahulu dan menjadikan suatu Gampong yang bernama Gampong Leubue.</p>
+    </div>
+
+    <!-- Lokasi Gampong Leubue -->
+    <div class="desc-card">
+      <h3>📍 Lokasi Gampong Leubue</h3>
+      <p>Kecamatan Pidie · Kabupaten Pidie · Provinsi Aceh</p>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12102.88687750703!2d95.90452636493212!3d5.381937086180955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3040ed3edb7f14df%3A0x362777672ca769fc!2sLeubue%2C%20Kec.%20Pidie%2C%20Kabupaten%20Pidie%2C%20Aceh!5e1!3m2!1sid!2sid!4v1776564522337!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
+    <!-- Berita Kuliner Terbaru -->
+    <div class="sec-hdr">
+      <h2 class="sec-title">Kuliner Unggulan Desa</h2>
+      <button class="see-all" onclick="go('berita')">Lihat Semua →</button>
+    </div>
+    <div class="grid" id="dash-grid"></div>
+  </main>
+</div>
+
+<!-- ===================================================
+     HALAMAN KULINER / BERITA
+=================================================== -->
+<div class="page" id="page-berita">
+  <main>
+    <div class="berita-hdr">
+      <h1>🍽️ Kuliner Khas Leubeu</h1>
+      <p>Ragam cita rasa otentik Aceh dari Desa Leubeu, Kecamatan Pidie</p>
+    </div>
+    <div class="filter-bar">
+      <button class="fbtn active" onclick="filter('semua',this)">Semua</button>
+      <button class="fbtn" onclick="filter('makanan',this)">Makanan Berat</button>
+      <button class="fbtn" onclick="filter('kue',this)">Kue &amp; Jajanan</button>
+      <button class="fbtn" onclick="filter('minuman',this)">Minuman</button>
+      <button class="fbtn" onclick="filter('seafood',this)">Seafood</button>
+    </div>
+    <div class="grid" id="berita-grid"></div>
+  </main>
+</div>
+
+<!-- ===================================================
+     HALAMAN TENTANG DESA
+=================================================== -->
+<div class="page" id="page-tentang">
+  <main>
+    <div class="about-banner">
+      <div class="about-icon">🏡</div>
+      <div>
+        <h2>Desa Leubeu</h2>
+        <p>Kecamatan Pidie · Kabupaten Pidie · Provinsi Aceh — Kode Pos 24151</p>
+      </div>
+    </div>
+
+    <div class="lokasi-banner">
+      <div class="lokasi-icon">📍</div>
+      <p>Gampong Leubeu terletak di <strong>Kecamatan Pidie, Kabupaten Pidie, Provinsi Aceh</strong>. Gampong ini dikelilingi hamparan sawah dan kebun yang subur, serta kaya akan tradisi kuliner berbasis rempah-rempah khas Aceh yang telah diwariskan turun-temurun.</p>
+    </div>
+
+    <!-- Visi Misi -->
+    <div class="vm-grid">
+      <div class="vm-card visi">
+        <h3>🌟 Visi</h3>
+        <p>"Terwujudnya Gampong Leubeu yang Sejahtera, Berbudaya, dan Mandiri Berlandaskan Nilai-Nilai Islami pada Tahun 2030."</p>
+      </div>
+      <div class="vm-card misi">
+        <h3>📋 Misi</h3>
+        <ul>
+          <li>Meningkatkan kualitas SDM melalui pendidikan dan pelatihan</li>
+          <li>Mengembangkan ekonomi berbasis kuliner dan pertanian lokal</li>
+          <li>Membangun infrastruktur desa yang merata dan berkualitas</li>
+          <li>Melestarikan budaya dan adat istiadat Aceh</li>
+          <li>Mewujudkan pemerintahan desa yang transparan dan akuntabel</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Info Grid -->
+    <div class="about-grid">
+      <div class="info-card">
+        <h3>📋 Identitas Desa</h3>
+        <div class="irow"><span class="ilabel">Nama Desa</span><span class="ivalue">Leubeu</span></div>
+        <div class="irow"><span class="ilabel">Kecamatan</span><span class="ivalue">Pidie</span></div>
+        <div class="irow"><span class="ilabel">Kabupaten</span><span class="ivalue">Pidie</span></div>
+        <div class="irow"><span class="ilabel">Provinsi</span><span class="ivalue">Aceh</span></div>
+        <div class="irow"><span class="ilabel">Kode Pos</span><span class="ivalue">24151</span></div>
+        <div class="irow"><span class="ilabel">Tipologi</span><span class="ivalue">Perdesaan</span></div>
+      </div>
+
+      <div class="info-card">
+        <h3>👥 Data Kependudukan</h3>
+        <div class="irow"><span class="ilabel">Total Penduduk</span><span class="ivalue">2.140 jiwa</span></div>
+        <div class="irow"><span class="ilabel">Laki-laki</span><span class="ivalue">1.075 jiwa</span></div>
+        <div class="irow"><span class="ilabel">Perempuan</span><span class="ivalue">1.065 jiwa</span></div>
+        <div class="irow"><span class="ilabel">Kepala Keluarga</span><span class="ivalue">530 KK</span></div>
+        <div class="irow"><span class="ilabel">Jumlah Dusun</span><span class="ivalue">4 Dusun</span></div>
+        <div class="irow"><span class="ilabel">Agama Mayoritas</span><span class="ivalue">Islam</span></div>
+      </div>
+
+      <div class="info-card">
+        <h3>🗺️ Geografis</h3>
+        <div class="irow"><span class="ilabel">Luas Wilayah</span><span class="ivalue">6,8 km²</span></div>
+        <div class="irow"><span class="ilabel">Ketinggian</span><span class="ivalue">±15 mdpl</span></div>
+        <div class="irow"><span class="ilabel">Batas Utara</span><span class="ivalue">Desa Kota Pidie</span></div>
+        <div class="irow"><span class="ilabel">Batas Selatan</span><span class="ivalue">Desa Meue</span></div>
+        <div class="irow"><span class="ilabel">Batas Timur</span><span class="ivalue">Desa Garot</span></div>
+        <div class="irow"><span class="ilabel">Batas Barat</span><span class="ivalue">Desa Reuleueng</span></div>
+      </div>
+
+      <div class="info-card">
+        <h3>🏛️ Perangkat Desa</h3>
+        <div class="irow"><span class="ilabel">Keuchik (Kades)</span><span class="ivalue">Muhammad Yusuf</span></div>
+        <div class="irow"><span class="ilabel">Sekretaris</span><span class="ivalue">Fatimah Zahra, S.E.</span></div>
+        <div class="irow"><span class="ilabel">Kaur Keuangan</span><span class="ivalue">Ibrahim Hasan</span></div>
+        <div class="irow"><span class="ilabel">Tuha Peut</span><span class="ivalue">H. Abdullah</span></div>
+        <div class="irow"><span class="ilabel">Kantor Gampong</span><span class="ivalue">Buka Sen–Jum</span></div>
+        <div class="irow"><span class="ilabel">Jam Pelayanan</span><span class="ivalue">08.00 – 15.00 WIB</span></div>
+      </div>
+    </div>
+
+    <!-- Deskripsi -->
+    <div class="desc-card">
+      <h3>📖 Sekilas Desa Leubeu</h3>
+      <p>Gampong Leubue merupakan Gampong yang jaraknya lumayan dekat dengan kota Sigli dan Grong-grong, sekitar 2 Kilometer atau 10 menit lamanya jika mengendarai sepeda motor atau angkutan umum. Letaknya tidak begitu jauh ke dalam, hanya 50 meter dari jalan raya Medan-Banda Aceh. Gampong ini bukan gampong yang terpelosok, masyarakatnya sudah lumayan berkembang. Di gampong Lebue pula terdapat sekolah-sekolah dari SD hingga SMA yang sebagian besarnya sudah berstatus Unggul.</p>
+      <p>Potensi yang besar dalam bidang pertanian, terutama persawahan membuat dominan masyarakat memilih bergelut dalam lahan sawah, dan ada juga yang membuka usaha-usaha rumahan lain seperti produksi kerupuk melinjo, emping, emping beras ketan, dan produksi terasi. Semua usaha ini sudah dipasarkan sampai ke luar daerah. Baik yang sudah jadi maupun yang masih dalam keadaan mentah. Akan tetapi, dari segi pengemasan produk dan pemasaran masih kurang baik. Kelompok ekonomi gampong Leubue sudah tergolong ekonomi menengah. Hal ini tampak dari tidak adanya masyarakat yang kondisinya sangat miskin.sebagian masyarakat sudah mulai membangun rumah mereka dengan batu-bata atau beton.</p>
+      <p>Jalan akses menuju gampong Leubue sudah lumayan baik. Lorong-lorongnya dibuat rabat beton, dan di dalam gampong banyak ditanam pohon melinjo dan pohon bambu. Pohon-pohon inilah yang dimanfaatkan oleh sebagian masyarakat gampong sebagai sumber pencaharian.</p>
+      <p>Konon katanya mengapa dinamakan Gampong Leubue, Leubue adalah bahasa acehnya dari daun talas dikarenakan pada masa dahulu gampong Leubue banyak di tumbuhi daun Talas, sehingga dibersihkanlah oleh orang-orang dahulu dan menjadikan suatu Gampong yang bernama Gampong Leubue.</p>
+    </div>
+  </main>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <p>© 2025 <strong>Portal Gampong Leubeu</strong> — Kecamatan Pidie, Kabupaten Pidie, Aceh</p>
+  <p style="margin-top:5px;">Kantor Gampong Leubeu · Kec. Pidie · Kab. Pidie 24151 &nbsp;|&nbsp; Dibuat oleh Dian Ramadhani untuk Memperkenalkan kuliner khas dan budaya.</p>
+</footer>
+
+<script>
+// ============================================================
+// DATA KULINER — 9 item kuliner khas Pidie / Aceh
+// Gambar diambil dari URL internet (langsung tampil)
+// ============================================================
+const kulinerData = [
+  {
+    id: 1,
+    judul: "Mie Aceh — Raja Kuliner Rempah Pidie",
+    tanggal: "10 Juli 2025",
+    deskripsi: "Mie Aceh adalah primadona kuliner Kabupaten Pidie. Mie kuning tebal dimasak dengan kuah kari kental berwarna merah, diperkaya bumbu cabai, jintan, kapulaga, dan kayu manis. Tersedia versi goreng maupun rebus, dilengkapi daging sapi, udang, atau kepiting.",
+    gambar: "images/mie.jpg",
+    kategori: "makanan,seafood  ",
+    rating: "4.9",
+    tempat: "Warung Mie Aceh Simpang ",
+    featured: true
+  },
+  {
+      id: 2,
+    judul: "Bandrek Blang Galang — Minuman Ikonik Warung Aceh",
+    tanggal: "25 Juni 2025",
+    deskripsi: "Bandrek Blang Galang adalah minuman tradisional khas Aceh yang terbuat dari rempah-rempah yang membuatnya memiliki aroma khas.",
+    gambar: "images/bandrek.jpg",
+    kategori: "minuman",
+    rating: "4.9",
+    tempat: "Warung Bandrek Blang Galang"
+  },
+
+  {
+    id: 3,
+    judul: "Ayam Tangkap — Hidangan Upacara Adat Aceh",
+    tanggal: "8 Juli 2025",
+    deskripsi: "Ayam Tangkap adalah hidangan ikonik Aceh di mana potongan ayam digoreng bersama dedaunan aromatik — daun pandan, daun kari, dan serai — hingga harum dan renyah. Wajib hadir di setiap hajatan gampong Blang Galang.",
+    gambar: "images/ayam_tangkap.jpg",
+    kategori: "makanan",
+    rating: "4.8",
+    tempat: "Rumah Makan Bu Asiah"
+  },
+  {
+    id: 4,
+    judul: "Nasi Gurih — Sarapan Wajib Warga Gampong",
+    tanggal: "5 Juli 2025",
+    deskripsi: "Nasi Gurih dimasak dengan santan kelapa segar dan rempah pilihan sehingga menghasilkan aroma yang menggoda. Disajikan bersama ikan goreng, telur, sambal, dan kerupuk melinjo — hidangan sarapan favorit warga Blang Galang setiap pagi.",
+    gambar: "images/guri.jpg",
+    kategori: "makanan",
+    rating: "4.7",
+    tempat: "Warung Nasi Gurih Mak Ina"
+  },
+  {
+    id: 5,
+    judul: "Mie Kepiting — Kuliner Legendaris Khas Aceh",
+    tanggal: "2 Juli 2025",
+    deskripsi: "Mie Kepiting adalah hidangan khas Aceh yang terbuat dari mie kuning tebal yang disajikan dengan kuah kari kental berwarna merah, diperkaya bumbu cabai, jintan, kapulaga, dan kayu manis. Tersedia versi goreng maupun rebus, dilengkapi daging kepiting.",
+    gambar: "images/mie_kepiting.jpg",
+    kategori: "makanan,seafood  ",
+    rating: "4.8",
+    tempat: "Kedai Mie Kepiting Pak Hasan"
+  },
+  {
+    id: 6,
+    judul: "Roti Canai — Camilan Sore Khas Kedai Kopi",
+    tanggal: "29 Juni 2025",
+    deskripsi: "Roti Canai adalah roti pipih berlapis-lapis yang dimasak di atas wajan datar dengan sedikit minyak. Di Pidie, disajikan dengan kuah kari kambing yang kental atau sekadar gula dan susu kental manis. Camilan andalan sore hari di kedai kopi gampong.",
+    gambar: "images/canai.jpg",
+    kategori: "makanan,seafood",
+    rating: "4.6",
+    tempat: "Kedai Kopi Ujong Blang"
+  },
+  {
+    id: 7,
+    judul: "Kopi Tarik — Minuman Ikonik Warung Aceh",
+    tanggal: "25 Juni 2025",
+    deskripsi: "Kopi Tarik adalah kopi khas Aceh yang diseduh pekat lalu dicampur susu kental manis dan 'ditarik' dari wadah tinggi untuk menghasilkan busa lembut di permukaannya. Aroma kopi Gayo yang kuat menjadi daya tarik utama minuman ini.",
+    gambar: "images/kopi_tarik.jpg",
+    kategori: "minuman",
+    rating: "4.9",
+    tempat: "Warung Kopi Gampong Blang Galang"
+  },
+  {
+    id: 8,
+    judul: "Gulai Kambing — Masakan Berkuah Rempah Kaya",
+    tanggal: "20 Juni 2025",
+    deskripsi: "Gulai Kambing khas Pidie dimasak dengan santan kelapa dan lebih dari 15 jenis rempah — kunyit, jahe, lengkuas, ketumbar, jintan — menghasilkan kuah kental berwarna kuning kemerahan yang aromatik. Dagingnya empuk dan meresap bumbu hingga ke dalam.",
+    gambar: "images/gulai.jpg",
+    kategori: "makanan",
+    rating: "4.7",
+    tempat: "Rumah Makan H. Yusuf"
+  },
+  {
+    id: 9,
+    judul: "Timphan — Kue Tradisional Pembungkus Daun Pisang",
+    tanggal: "15 Juni 2025",
+    deskripsi: "Timphan adalah kue khas Aceh berbahan tepung ketan yang diisi dengan parutan kelapa manis atau inti pisang, kemudian dibungkus daun pisang muda dan dikukus. Harum, lembut, dan manis — selalu hadir di kenduri dan Hari Raya di Blang Galang.",
+    gambar: "images/timphan.jpg",
+    kategori: "kue",
+    rating: "4.8",
+    tempat: "Pasar Pagi Gampong"
+  },
+  {
+    id: 10,
+    judul: "Apam — Warisan Kuliner Tak Benda Pidie",
+    tanggal: "10 Juni 2025",
+    deskripsi: "Apam adalah kue tradisional Pidie berbahan tepung beras yang difermentasi semalam, dimasak di atas wajan tanah liat dengan bara api. Menghasilkan tekstur lembut di tengah dan sedikit renyah di pinggir. Apam kerap disajikan dalam tradisi Teut Apam saat bulan Rajab.",
+    gambar: "images/apam.jpg",
+    kategori: "kue",
+    rating: "4.7",
+    tempat: "Pasar Tradisional Pidie"
+  }
+];
+
+// ============================================================
+// RENDER CARD
+// ============================================================
+function buatCard(item, showFeatured) {
+  const tagClass = {
+    makanan: 'tag-makanan',
+    minuman: 'tag-minuman',
+    kue:     'tag-kue',
+    seafood: 'tag-seafood'
+  }[item.kategori] || 'tag-makanan';
+
+  const labelTipe = {
+    makanan: 'Makanan Berat',
+    minuman: 'Minuman',
+    kue:     'Kue & Jajanan',
+    seafood: 'Seafood'
+  }[item.kategori] || item.kategori;
+
+  // Jika featured dan boleh tampil sebagai featured card
+  if (item.featured && showFeatured) {
+    return `
+      <div class="card-featured">
+        <div class="card-img-wrap">
+          <img src="${item.gambar}" alt="${item.judul}" loading="lazy"
+            onerror="this.src='https://via.placeholder.com/400x220/e6f4ed/1e6b3c?text=Gambar+Tidak+Tersedia'"/>
+          <div class="card-rating">⭐ ${item.rating}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="tag ${tagClass}">${labelTipe}</span>
+            <span class="card-date">📅 ${item.tanggal}</span>
+          </div>
+          <h3 class="card-title">${item.judul}</h3>
+          <p class="card-desc">${item.deskripsi}</p>
+          <div class="card-footer">
+            <span class="card-place">📍 ${item.tempat}</span>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  return `
+    <div class="card">
+      <div class="card-img-wrap">
+        <img src="${item.gambar}" alt="${item.judul}" loading="lazy"
+          onerror="this.src='https://via.placeholder.com/400x200/e6f4ed/1e6b3c?text=Gambar+Tidak+Tersedia'"/>
+        <div class="card-rating">⭐ ${item.rating}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="tag ${tagClass}">${labelTipe}</span>
+          <span class="card-date">📅 ${item.tanggal}</span>
+        </div>
+        <h3 class="card-title">${item.judul}</h3>
+        <p class="card-desc">${item.deskripsi}</p>
+        <div class="card-footer">
+          <span class="card-place">📍 ${item.tempat}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function showDetail(judul) {
+  alert('📖 Artikel: ' + judul + '\n\nFitur detail artikel dapat dikembangkan sesuai kebutuhan.');
+}
+
+// ============================================================
+// RENDER DASHBOARD — featured + 3 card berikutnya
+// ============================================================
+function renderDashboard() {
+  const grid = document.getElementById('dash-grid');
+  const preview = kulinerData.slice(0, 4);
+  grid.innerHTML = preview.map((item, i) => buatCard(item, i === 0)).join('');
+}
+
+// ============================================================
+// RENDER HALAMAN BERITA / KULINER
+// ============================================================
+function renderBerita(kat = 'semua') {
+  const grid = document.getElementById('berita-grid');
+  const data = kat === 'semua' ? kulinerData : kulinerData.filter(k => k.kategori === kat);
+  // Halaman berita: tidak ada featured card
+  grid.innerHTML = data.map(item => buatCard(item, false)).join('');
+}
+
+// ============================================================
+// FILTER
+// ============================================================
+function filter(kat, btn) {
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBerita(kat);
+}
+
+// ============================================================
+// NAVIGASI SPA
+// ============================================================
+function go(pageName) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + pageName);
+  if (target) {
+    target.classList.add('active');
+    // reset animasi
+    target.style.animation = 'none';
+    target.offsetHeight;
+    target.style.animation = '';
+  }
+  // Update link aktif desktop
+  document.querySelectorAll('#deskMenu a').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === pageName);
+  });
+  // Update link aktif mobile
+  document.querySelectorAll('.mobile-panel a').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === pageName);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+// HAMBURGER MENU
+// ============================================================
+function toggleMenu() {
+  document.getElementById('hbg').classList.toggle('open');
+  document.getElementById('mobMenu').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('hbg').classList.remove('open');
+  document.getElementById('mobMenu').classList.remove('open');
+}
+function closeMobOverlay(e) {
+  if (e.target === document.getElementById('mobMenu')) closeMenu();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderDashboard();
+renderBerita();
+</script>
+</body>
+</html>
